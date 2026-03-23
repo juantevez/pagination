@@ -1,0 +1,359 @@
+{
+  "info": {
+    "name": "Pagination Demo - Hexagonal Architecture",
+    "description": "Colección para probar los endpoints de paginación Offset-Based y Cursor-Based.\n\nAntes de usar:\n1. docker-compose up -d\n2. mvn spring-boot:run",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "OFFSET-BASED",
+      "description": "Paginación clásica con LIMIT + OFFSET. Devuelve totalElements y totalPages.",
+      "item": [
+        {
+          "name": "Primera página (defaults)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Página 0, 10 elementos. sortField=id ASC por default."
+          }
+        },
+        {
+          "name": "Segunda página",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=1&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Observar que hasPrevious=true y currentPage=1."
+          }
+        },
+        {
+          "name": "Ordenar por precio ASC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=price&sortDirection=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "ASC" }
+              ]
+            },
+            "description": "Sorting dinámico: productos ordenados por precio de menor a mayor."
+          }
+        },
+        {
+          "name": "Ordenar por precio DESC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=price&sortDirection=DESC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "DESC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ordenar por nombre ASC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=name&sortDirection=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "name" },
+                { "key": "sortDirection", "value": "ASC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ordenar por fecha DESC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=createdAt&sortDirection=DESC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "createdAt" },
+                { "key": "sortDirection", "value": "DESC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por categoría - electronics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=price&sortDirection=ASC&category=electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "ASC" },
+                { "key": "category", "value": "electronics" }
+              ]
+            },
+            "description": "totalElements refleja solo los productos de la categoría filtrada."
+          }
+        },
+        {
+          "name": "Filtrar por categoría - books",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=5&sortField=name&sortDirection=ASC&category=books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "5" },
+                { "key": "sortField", "value": "name" },
+                { "key": "sortDirection", "value": "ASC" },
+                { "key": "category", "value": "books" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Última página (page grande)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=49&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "49" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Con 500 productos y size=10 → página 49 es la última. hasNext=false."
+          }
+        },
+        {
+          "name": "[ERROR] Campo de sort inválido",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=10&sortField=invalidField",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "invalidField" }
+              ]
+            },
+            "description": "SortCriteria.validateField() lanza IllegalArgumentException. Esperar 500."
+          }
+        },
+        {
+          "name": "[ERROR] Página negativa",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=-1&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "-1" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "GetProductsUseCase.validatePageParams() rechaza página negativa."
+          }
+        },
+        {
+          "name": "[ERROR] Size fuera de rango",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/paged?page=0&size=200",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "paged"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "200" }
+              ]
+            },
+            "description": "Size máximo permitido es 100."
+          }
+        }
+      ]
+    },
+    {
+      "name": "CURSOR-BASED (Keyset)",
+      "description": "Paginación por cursor. No devuelve totalElements. Ideal para scroll infinito.",
+      "item": [
+        {
+          "name": "Primera página (sin cursor)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Sin cursor = primera página. Copiar el nextCursor de la respuesta para la siguiente request."
+          }
+        },
+        {
+          "name": "Segunda página (cursor manual)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?cursor=10&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "cursor", "value": "10", "description": "Reemplazar con el nextCursor de la respuesta anterior" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Reemplazar cursor=10 con el nextCursor devuelto por la primera página."
+          }
+        },
+        {
+          "name": "Ordenar por precio ASC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10&sortField=price&sortDirection=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "ASC" }
+              ]
+            },
+            "description": "SQL: ORDER BY price ASC, id ASC. El id actúa como tiebreaker."
+          }
+        },
+        {
+          "name": "Ordenar por precio DESC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10&sortField=price&sortDirection=DESC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "DESC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ordenar por nombre ASC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10&sortField=name&sortDirection=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "name" },
+                { "key": "sortDirection", "value": "ASC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ordenar por fecha DESC",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10&sortField=createdAt&sortDirection=DESC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "createdAt" },
+                { "key": "sortDirection", "value": "DESC" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Page size grande",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=50&sortField=price&sortDirection=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "50" },
+                { "key": "sortField", "value": "price" },
+                { "key": "sortDirection", "value": "ASC" }
+              ]
+            },
+            "description": "Con 500 productos y size=50 → hasNext=true. nextCursor apunta al ID 50."
+          }
+        },
+        {
+          "name": "[ERROR] Campo de sort inválido",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/cursor?size=10&sortField=invalidField",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "cursor"],
+              "query": [
+                { "key": "size", "value": "10" },
+                { "key": "sortField", "value": "invalidField" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pagination_demo_db
+    environment:
+      POSTGRES_DB: pagination_demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
